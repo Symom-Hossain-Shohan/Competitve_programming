@@ -1,0 +1,1 @@
+{"name":"Local: Regular_Expression_Matching","url":"e:\\Compititve_programming\\Dynamic Programming\\Regular_Expression_Matching.cpp","tests":[{"id":1672247157848,"input":"ab\n.*","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\Compititve_programming\\Dynamic Programming\\Regular_Expression_Matching.cpp","group":"local","local":true}
