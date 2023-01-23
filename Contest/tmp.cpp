@@ -1,84 +1,113 @@
-#include <bits/stdc++.h>
+///Bismillahir Rahmanir Rahim
+#include<bits/stdc++.h>
 using namespace std;
 
-int main()
-{
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    int tc;
-    cin >> tc;
-    while (tc--)
-    {
-        long long n, m, i, j, k, l;
-        cin >> n; // n input
-        long long a[43];
-        string s; // s input
-        for (i = 0; i < 33; i++)
-            a[i] = 0;
-        cin >> s;
-        for (i = 0; i < n; i++)
-        {
-            a[s[i] - 'a']++; // character frequency
-        }
-        vector<pair<long long, long long>> v;
-        for (i = 0; i < 26; i++)
-        {
-            v.push_back({a[i], i}); // frequency gula pair e nise
-        }
-        // for(auto t:v)cout<<t.first<<" "<<t.second<<"\n";
-        long long mx = -1, ans = -1, can = 0;
-        sort(v.rbegin(), v.rend()); // choto theke boro sort korse
-        for (i = 1; i <= 26; i++)
-        {
-            if (n % i == 0)
-            {
-                long long nochange = 0;
-                can = n / i; // protita character koy bar thakbe
-                for (j = 0; j < i; j++)
-                {
-                    nochange += min(can, v[j].first);
-                }
-                //	cout<<nochange<<endl;
-                if (nochange > mx)
-                {
-                    mx = nochange;
-                    ans = i;
-                }
-            }
-        }
-        //	cout<<mx<<endl;
-        cout << n - mx << "\n";
-        long long cann[44], need[44];
-        for (i = 0; i < 26; i++)
-            need[i] = 0;
-        for (i = 0; i < 26; i++)
-            cann[i] = 0;
-        for (i = 0; i < ans; i++)
-        {
-            cann[v[i].second] = min(v[i].first, n / ans);
-            need[v[i].second] = max(0ll, (n / ans) - cann[v[i].second]);
-        }
+#define                           ll                          long long
+#define                           int                         ll
+#define                           ld                          long double
+#define                           fi                          first
+#define                           si                          second
+#define                           mp                          make_pair
+#define                           pb                          push_back
+#define                           pi                          pair<int,int>
+#define                           nd(a,b,c)                   mp(mp(a,b),c)
+#define                           clr(x)                      memset(x,0,sizeof(x));
+#define                           f(i,l,r)                    for(int i=l;i<=r;i++)
+#define                           rf(i,r,l)                   for(int i=r;i>=l;i--)
+#define                           done(i)                     cout<<"done = "<<i<<endl;
+#define                           show(x,y)                   cout<<x<<" : ";for(auto z:y)cout<<z<<" ";cout<<endl;
+#define                           fast                        ios_base::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+ 
+ 
+const ll inf=2e18;
+const int mod=1e9+7;
+const int M=52;
 
-        for (i = 0; i < n; i++)
+int n,a[M];
+
+void solve()
+{
+    cin>>n;
+    f(i,1,n)cin>>a[i];
+
+    map<int,int>cnt;
+   
+    for(int i=1;i<=n-1;i++)
+    {
+        for(int j=i+1;j<=n;j++)
         {
-            if (cann[s[i] - 'a'] > 0)
+            int gap=a[j]-a[i];
+            int sq_gap=sqrt(gap)+1;
+            for(int k=1;k<=sq_gap;k++)
             {
-                cout << s[i];
-                cann[s[i] - 'a']--;
-            }
-            else
-            {
-                for (j = 0; j < 26; j++)
-                {
-                    if (need[j] > 0)
-                    {
-                        need[j]--;
-                        cout << (char)(j + 'a');
-                        break;
-                    }
-                }
+                  if(gap%k==0)
+                  {   
+                      bool flag=0;
+
+                      int upv=k;
+                      int umv=gap/k;
+                      
+                      if(umv>upv)swap(umv,upv);
+
+                      int u=(upv+umv);
+                      if(u%2)flag=1;
+                      u=u/2;
+
+                      int v=upv-u;
+
+                      int usq=u*u;
+                      int vsq=v*v;
+
+                      int ux=usq-a[j];
+                      int vx=vsq-a[i];
+
+                      if(ux!=vx)flag=1;
+
+                      if(ux<0 || ux>1e18)flag=1;
+
+                      if(flag==0)
+                      {
+                          cnt[ux]++;
+                      }
+
+
+                  }
             }
         }
-        cout << "\n";
     }
+    
+    map<int,int>cnt_ase;
+
+    for(auto z:cnt)
+    {
+        int p=z.si;
+        cnt_ase[2*p]=1;
+    }
+
+    for(int i=n;i>=1;i--)
+    {
+          int q=i*(i-1);
+          if(cnt_ase.count(q))
+          {
+              cout<<i<<"\n";
+              return ;
+          }
+    }
+
+    cout<<"1\n";
+    return ;
+}
+ 
+ int32_t main()
+ 
+{
+    fast
+    int t=1;
+    cin>>t;
+    while(t--)
+    {
+        solve();
+    }
+    return 0;
+ 
 }
