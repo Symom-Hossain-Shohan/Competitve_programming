@@ -19,8 +19,11 @@ int main()
         v[y].push_back(x);
     }
     queue<int> q;
-    q.push(0);
+    
 
+    int src, dest;
+    cin >> src >> dest;
+    q.push(src);
     while (!q.empty())
     {
         int u = q.front();
@@ -38,7 +41,6 @@ int main()
         }
     }
 
-    int src, dest;
-    cin >> src >> dest;
-    cout << abs(dis[dest] - dis[src]) << endl;
+    
+    cout << dis[dest] << endl;
 }
