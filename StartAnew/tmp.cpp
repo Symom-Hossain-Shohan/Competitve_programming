@@ -1,63 +1,125 @@
-#include <bits/stdc++.h>
-#include<ext/pb_ds/assoc_container.hpp>
-#include<ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
-using namespace std;
-
-
-//defines...
-#define ll           long long
-#define boost        ios_base::sync_with_stdio(false);cin.tie(NULL);
-#define pb           push_back
-#define mp           make_pair
-#define in           insert
-#define pi           2*acos(0.0)
-#define srt(s)       sort(s.begin(),s.end())
-#define rsrt(s)      sort(s.rbegin(),s.rend())
-#define all(x)       x.begin(),x.end()
-#define mem(a, b)    memset(a, b, sizeof(a))
-#define c_test       printf("Case %lld: ",t)
-
-const ll mod=1e9+7;
-const ll MX=2e5+5;
-
-
-inline void norm(ll &a) {a%=mod; (a<0) && (a+=mod) ;}                            //positive mod value
-inline ll modAdd(ll a,ll b) {a%=mod, b%=mod; norm(a),norm(b); return (a+b)%mod;} //modular addition
-inline ll modSub(ll a,ll b) {a%=mod, b%=mod; norm(a),norm(b); return (a-b)%mod;} //modular subtraction
-inline ll modMul(ll a,ll b) {a%=mod, b%=mod; norm(a),norm(b); return (a*b)%mod;} //modular multiplication
-
-inline ll bigMod(ll b,ll p)  {ll r=1; while(p) {if(p & 1LL) r=modMul(r,b) ;b=modMul(b,b) ; p>>=1LL ; } return r; }
-inline ll modInverse(ll a) {return bigMod(a,mod-2); }
-inline ll modDiv(ll a ,ll b) { return modMul(a,modInverse(b)) ;}
-
-
-typedef tree<ll,null_type,less<ll>,rb_tree_tag,tree_order_statistics_node_update>ordered_set;
-
-int dRow[] = { -1, 0, 1, 0 };
-int dCol[] = { 0, 1, 0, -1 };
-
-ll ext_gcd(ll a, ll b, ll& x, ll& y) {
-	if (b == 0) {x = 1;y = 0;return a;}
-	ll x1, y1, d = ext_gcd(b, a % b, x1, y1);
-	x = y1;y = x1 - y1 * (a / b);
-	return d;
-}
-
-
-void solve()
-{
-	
-}
-
-int main()
-{
-	ios_base::sync_with_stdio(false); cin.tie(NULL);
-	ll tc = 1;
-	//cin >> tc;
-	for (ll t = 1; t <= tc; t++)
-	{
-		solve();
-	}
-	return 0;
-}
+0
+1
+00
+10
+01
+11
+000
+100
+010
+110
+001
+101
+011
+111
+0000
+1000
+0100
+1100
+0010
+1010
+0110
+1110
+0001
+1001
+0101
+1101
+0011
+1011
+0111
+1111
+00000
+10000
+01000
+11000
+00100
+10100
+01100
+11100
+00010
+10010
+01010
+11010
+00110
+10110
+01110
+11110
+00001
+10001
+01001
+11001
+00101
+10101
+01101
+11101
+00011
+10011
+01011
+11011
+00111
+10111
+01111
+11111
+000000
+100000
+010000
+110000
+001000
+101000
+011000
+111000
+000100
+100100
+010100
+110100
+001100
+101100
+011100
+11...
+Output
+0
+0
+0
+1000000000000
+0
+0
+0
+1000000000001
+1000000000000
+1000000000001
+0
+1000000000000
+0
+0
+0
+1000000000001
+1000000000001
+2000000000002
+1000000000000
+2000000000001
+1000000000001
+1000000000001
+0
+1000000000001
+1000000000000
+1000000000001
+0
+1000000000000
+0
+0
+0
+1000000000001
+1000000000001
+2000000000002
+1000000000001
+2000000000002
+2000000000002
+2000000000002
+1000000000000
+2000000000002
+2000000000001
+2000000000002
+1000000000001
+2000000000001
+1000000000001
+1000000000001
