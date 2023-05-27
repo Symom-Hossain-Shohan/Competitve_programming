@@ -1,88 +1,70 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
+int main() {
+	freopen("rental.in", "r", stdin);
+	int n, m, r;
+	cin >> n >> m >> r;
 
-bool cmp(pair<ll, ll> a, pair<ll, ll> b)
-{
-    return a.second * b.first < b.first * a.second;
-}
+	vector<int> milk_amt(n);
+	for (int i = 0; i < n; i++) { cin >> milk_amt[i]; }
 
-void solve()
-{
-    ll n, m, r;
-    cin >> n >> m >> r;
-    vector<ll> cow(n);
-    for (auto &i : cow)
-        cin >> i;
-    sort(cow.begin(), cow.end());
+	vector<pair<int, int>> shops(m);
+	for (int i = 0; i < m; i++) { cin >> shops[i].second >> shops[i].first; }
 
-    vector<pair<ll, ll>> milk(m);
-    for (auto &i : milk)
-        cin >> i.first >> i.second;
-    vector<ll> rent(r);
-    for (auto &i : rent)
-        cin >> i;
-    ;
-    sort(rent.begin(), rent.end());
-    sort(milk.begin(), milk.end(), cmp);
+	vector<int> rent(r);
+	for (int i = 0; i < r; i++) { cin >> rent[i]; }
 
-    ll ans = 0;
-    for (int i = n - 1; i >= 0; i--)
-    {
-        ll mk = cow[i];
-        ll t = 0;
-        ll cnt = 0;
-        for (int j = milk.size() - 1; j >= 0; j--)
-        {
-            if (mk <= milk[j].first)
-            {
-                t += (mk)*milk[j].second;
-                cnt++;
-                break;
-            }
-            else
-            {
-                t += milk[j].first * milk[j].second;
-                cnt++;
-                mk -= milk[j].first;
-            }
-        }
-        if (t > rent.back())
-        {
-            ans += t;
-            for (int j = milk.size() - 1; j >= 0; j--)
-            {
-                if (mk <= milk[j].first)
-                {
-                    milk[j].first -= mk; 
-                    break;
-                }
-                else
-                {
-                    mk -= milk[j].first;
-                    milk.pop_back();
-                }
-            }
-        }
-        else 
-        {
-            ans += rent.back();
-            rent.pop_back();
-        }
-    }
-    cout << ans << endl; 
-}
+	// sort cows by milk production in descending order
+	sort(milk_amt.begin(), milk_amt.end(), greater<int>());
+	// sort shops by selling price in descending order
+	sort(shops.begin(), shops.end(), greater<pair<int, int>>());
+	// sort rent in descending order
+	sort(rent.begin(), rent.end(), greater<int>());
 
-int main()
-{
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    ll tc = 1;
-    // cin >> tc;
-    for (ll t = 1; t <= tc; t++)
-    {
-        solve();
-    }
-    return 0;
+	int shop_at = 0;  // the index of the shop which we've bought up to
+	int rent_at = 0;  // the index of the farmer we've rented up to
+	int cow_at = 0;
+	long long max_money = 0;
+	while (cow_at < n) {
+		int amt = milk_amt[cow_at];
+		int sold_money = 0;  // how much we can make from selling the milk
+		int curr_shop = shop_at;
+		int last = 0;
+
+		// calculate how much money this cow can make if we sell its milk
+		while (curr_shop < m) {
+			int sold = min(amt, shops[curr_shop].second);
+			sold_money += shops[curr_shop].first * sold;
+			amt -= sold;
+
+			if (amt == 0) {
+				last = sold;
+				break;
+			} else {
+				curr_shop++;
+			}
+		}
+
+		// should we rent or sell this cow?
+		if (rent_at >= r || sold_money > rent[rent_at]) {
+			max_money += sold_money;
+			shop_at = curr_shop;
+			if (shop_at < m) { shops[shop_at].second -= last; }
+			cow_at++;
+		} else {
+			max_money += rent[rent_at];
+			/*
+			 * instead of renting this cow, it's better to rent off
+			 * the cow that makes the least amount of milk
+			 * (we don't process the cow at the end of the list)
+			 */
+			n--;
+			rent_at++;
+		}
+	}
+
+	freopen("rental.out", "w", stdout);
+    
+	cout << max_money << endl;
 }

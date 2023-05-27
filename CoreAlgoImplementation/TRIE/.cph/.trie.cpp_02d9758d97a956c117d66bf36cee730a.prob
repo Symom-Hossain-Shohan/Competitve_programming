@@ -1,0 +1,1 @@
+{"name":"Local: trie","url":"e:\\Compititve_programming\\CoreAlgoImplementation\\TRIE\\trie.cpp","tests":[{"id":1684426890962,"input":"3\nabc\ndef\nfga\n4\na\nb\nabc\ndef","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\Compititve_programming\\CoreAlgoImplementation\\TRIE\\trie.cpp","group":"local","local":true}

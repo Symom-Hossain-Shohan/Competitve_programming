@@ -1,0 +1,1 @@
+{"name":"Local: shortestUniquePrefixArray","url":"e:\\Compititve_programming\\Trie\\shortestUniquePrefixArray.cpp","tests":[{"id":1684428257660,"input":"2\n2\nabcd\nabcds\n3\nmany\nmango\nmad","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\Compititve_programming\\Trie\\shortestUniquePrefixArray.cpp","group":"local","local":true}
