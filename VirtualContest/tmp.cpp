@@ -1,32 +1,48 @@
-#include<bits/stdc++.h>
+
+#include <bits/stdc++.h>
+
 using namespace std;
-
-typedef long long ll;
-
-void solve()
+const int NMAX = 2e5 + 5;
+int dp[NMAX], id[NMAX];
+vector<pair<int, int>> edg[NMAX];
+void dfs(int u)
 {
-    ll x = 2, y = 5; 
-    for(int i=0;i<3;i++)
+    for (auto it : edg[u])
     {
-        if((x&(1<<i)) and (y&(1<<i))==0)
+        if (dp[it.first] == 0)
         {
-            y = y | (1<<i);
-            x = x & (~(1<<i));
-            cout << i << ' ';
+            dp[it.first] = dp[u] + (it.second <= id[u]);
+            id[it.first] = it.second;
+            dfs(it.first);
         }
     }
-
-    cout << x << ' ' << y <<endl; 
 }
-
+void tc()
+{
+    int n;
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+        dp[i] = id[i] = 0, edg[i].clear();
+    for (int i = 1; i < n; i++)
+    {
+        int u, v;
+        cin >> u >> v;
+        edg[u].push_back({v, i});
+        edg[v].push_back({u, i});
+    }
+    dp[1] = 1;
+    dfs(1);
+    int ans = 0;
+    for (int i = 1; i <= n; i++)
+        ans = max(ans, dp[i]);
+    cout << ans << '\n';
+}
 int main()
 {
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
-    ll tc = 1;
-    //cin >> tc;
-    for (ll t = 1; t <= tc; t++)
-    {
-        solve();
-    }
+    ios_base::sync_with_stdio(false);
+    int t;
+    cin >> t;
+    while (t--)
+        tc();
     return 0;
 }

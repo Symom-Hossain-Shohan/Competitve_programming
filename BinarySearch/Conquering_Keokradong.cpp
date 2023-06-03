@@ -1,84 +1,119 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-vector<ll> v;
-ll n, k;
+#define LL long long
+#define PII pair<int,int>
+#define PLL pair<LL,LL>
+#define MP make_pair
+#define F first
+#define S second
+#define INF INT_MAX
 
-ll good(ll mid)
+#define ALL(x) (x).begin(), (x).end()
+#define DBG(x) cerr << __LINE__ << " says: " << #x << " = " << (x) << endl
+
+
+
+const int nmax = 1e3+7;
+const LL LINF = 1e17;
+
+
+int ara[nmax];
+int n,k;
+
+bool isPossible(int d)
 {
-    ll cnt = 0, x = 0;
-    for (int i = 0; i < n+1; i++)
-    {
-        if (x + v[i] <= mid)
-            x += v[i];
-        else
-        {
-            x = v[i];
-            cnt++;
-        }
-    }
-    cnt++;
+    int sum = 0;
+    int cnt = 0;
 
-    return cnt;
+    for(int i=1; i<=n; i++)
+    {
+        if(d<ara[i])
+            return false;
+
+        if(sum+ara[i]<=d)
+            sum += ara[i];
+        else
+            cnt++, sum = ara[i];
+    }
+
+//  cout<<d<<" : "<<cnt<<endl;
+    cnt++;
+    return cnt<=k;
 }
 
-void solve()
+void printAns(int d)
 {
-    cin >> n >> k;
-    v.resize(n+1);
-    ll l = 0, r = 0;
-    for (auto &i : v)
-        cin >> i, r += i;
-    ll ans = -1;
+    int sum = 0;
+    int cnt = 0;
 
-    while (l <= r)
+    for(int i=1; i<=n; i++)
     {
-        ll mid = (l+r)/2; 
-        if (good(mid) <= k+1)
-        {
-            r = mid - 1;
-            if (good(mid) == k+1)
-            {
-                ans = mid;
-                break;
-            }
-        }
+        if(sum+ara[i]<=d)
+            sum += ara[i];
         else
-            l = mid + 1;
-    }
-
-    vector<ll> res; 
-    ll x = 0; 
-    for(int i = 0;i<n+1; i++)
-    {
-       // cout << x << ' '; 
-        //cout << v[i] << ' ';
-        if(x+v[i]<=ans) x += v[i]; 
-        else 
         {
-            res.push_back(x); 
-            x = v[i];
+//            cout<<sum<<endl;
+            printf("%d\n",sum);
+            cnt++;
+            sum = ara[i];
+        }
+
+        if(n-i+1==k-cnt)
+        {
+            printf("%d\n",sum);
+
+            for(int j=i+1;j<=n;j++)
+                printf("%d\n",ara[j]);
+
+            break;
         }
     }
-    //cout << endl; 
-
-    res.push_back(x);
-    cout << *max_element(res.begin(), res.end()) << endl; 
-    for(auto i: res) cout << i << endl; 
-     
 }
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    ll tc = 1;
-    cin >> tc;
-    for (ll t = 1; t <= tc; t++)
+    int tc;
+    scanf("%d",&tc);
+
+    for(int q=1; q<=tc; q++)
     {
-        cout << "Case " << t << ": ";
-        solve();
+        scanf("%d %d",&n,&k);
+        n++, k++;
+
+        int lo = 0, hi = 0, mid = 0;
+
+        for(int i=1; i<=n; i++)
+        {
+            scanf("%d",&ara[i]);
+
+            lo = max(lo,ara[i]);
+            hi += ara[i];
+        }
+
+        int ans = lo;
+
+        while(lo<hi)
+        {
+            mid = (lo+hi)/2;
+
+            //DBG(lo) , DBG(hi) , DBG(mid);
+
+            if(isPossible(mid))
+                hi = mid, ans = mid;
+            else
+                lo = mid+1;
+        }
+
+        //        cout<<"Case "<<q<<": "<<ans<<endl;
+        printf("Case %d: %d\n",q,ans);
+
+        printAns(ans);
+
     }
+
+
     return 0;
 }
+
+
