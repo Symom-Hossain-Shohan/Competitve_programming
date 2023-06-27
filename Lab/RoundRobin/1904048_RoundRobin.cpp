@@ -42,11 +42,14 @@ void solve()
     dp = vp;
 
     ll tq = fun(vp);
+
     sort(vp.begin(), vp.end());
     ll t = vp[0].first;
     cout << t << ' ';
     // 3double waiting
+
     double finalEx[n + 1];
+
     while (1)
     {
         for (int i = 0; i < (int)vp.size(); i++)
@@ -59,6 +62,7 @@ void solve()
                 vp.erase(vp.begin() + i);
             t += x;
         }
+
         if (vp.empty())
         {
             break;
@@ -74,6 +78,7 @@ void solve()
     cout << endl;
     for (int i = 1; i <= n; i++)
         w += waiting[i], tt += turnaroun[i];
+    
     cout << "Average waiting time :" << w / n << endl;
     cout << "Average turnaround time :" << tt / n << endl;
 }

@@ -2,77 +2,77 @@
 using namespace std;
 
 typedef long long ll;
+const ll N = 1e5 + 5; 
+
+ll ar[N];
+ll tree[4*N + 5];
 
 
-void buildTree(int *ar, int s, int e, int index, int *tree)
+void buildTree(ll start, ll end, ll index)
 {
-    if(s==e) 
+    if(start == end)
     {
-        tree[index] = ar[s];
+        tree[index] = ar[start]; 
         return; 
     }
-    //Recursively build the left sub-tree and then the right sub-tree and finally merge
-    int mid = (s+e)/2; 
-    buildTree(ar, s, mid, 2*index, tree);   
-    buildTree(ar, mid+1, e, 2*index + 1, tree);
 
-    //merging
+    ll mid = (start + end)/2; 
+
+    buildTree(start, mid, 2*index); 
+    buildTree(mid+1, end, 2*index+1); 
+
     tree[index] = min(tree[2*index], tree[2*index+1]); 
     return; 
 }
 
 
-int query(int *tree, int s, int e, int qs, int qe, int index)
+int query(ll s, ll e, ll qs, ll qe, ll index)
 {
-    if(s>=qs and e<=qe)
+    if(s>=qs and e <=qe)
     {
-        return tree[index];
+        return tree[index]; 
     }
-    else if(e<qs or s>qe) return INT32_MAX;
-    else 
-    {
-        int mid = (s+e)/2; 
-        int left = query(tree, s, mid, qs, qe, 2*index); 
-        int right = query(tree, mid+1, e, qs, qe, 2*index + 1);
-        return min(left, right);
-    } 
+    if(s>qe or e<qs) return INT_MAX; 
+
+    ll mid = (s+e)/2; 
+
+    ll left = query(s, mid, qs, qe, 2*index); 
+    ll right = query(mid+1, e, qs, qe, 2*index+1); 
+    return min(left, right); 
 }
 
-void update(int *tree, int s, int e, int l, int r, int increment, int index)
+
+void update(ll s, ll e, ll l, ll r, ll inc, ll index)
 {
-    if(r<s or l>e) 
-    {
-        return; 
-    }
-    else if(s==e)
-    {
-        tree[index] += increment; 
-        return; 
-    }
-    else 
-    {
-        int mid = (s+e)/2; 
+    if(l>e or r<s) return; 
 
-        update(tree, s, mid, l, r, increment, 2*index);
-        update(tree, mid+1, e, l, r, increment,  2*index+1);
-        tree[index] = min(tree[2*index], tree[2*index+1]); 
+    if(s==e)
+    {
+        tree[index] += inc; 
         return; 
     }
+
+    ll mid = (s+e)/2; 
+
+    update(s, mid, l, r, inc, 2*index); 
+    update(mid+1, e, l, r, inc, 2*index+1); 
+
+    tree[index] = min(tree[2*index], tree[2*index+1]); 
+    return; 
+
 }
-
 
 void solve()
 {
-    int n; 
+    ll n; 
     cin >> n; 
-    int ar[n];
-    for(auto &i: ar) cin >> i; 
+    for(int i = 0;i<n; i++) cin >> ar[i]; 
+    buildTree(0, n-1, 1);
+    
 
-    int *tree = new int(4*n+1);
-    memset(tree, -10, sizeof(tree)); 
-    buildTree(ar, 0, n-1, 1, tree);
-    update(tree, 0, n-1, 3, 3, 8, 1);
-    cout << query(tree, 0, n-1, 0, 5, 1);
+
+
+
 }
 
 int main()
