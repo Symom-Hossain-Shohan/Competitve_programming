@@ -1,58 +1,50 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 
 using namespace std;
+const int N = 107;
+int sum[N], dp[N][N];
 
-class Solution {
-public:
-	string s, p;
-	vector<vector<int>> memo;
-	bool dp(int i, int j) {
-		if (i == s.size() && j == p.size()) return true;
-		if (j == p.size()) return false;
-		// if (i == s.size()) ;
+int cou(int i, int j)
+{
+    if(i > j)
+        return 0;
 
-		if (memo[i][j] != -1) return memo[i][j];
+    if(dp[i][j] != INT_MAX)
+        return dp[i][j];
 
-		bool ans = false;
+    dp[i][j] = sum[j] - sum[i-1];
+    for(int c=i; c<=j; ++ c)
+    {
+        dp[i][j] = max(dp[i][j], sum[c] - sum[i-1] - cou(c+1, j));
+        dp[i][j] = max(dp[i][j], sum[j] - sum[c-1] - cou(i, c-1));
+    }
 
-		if (i < s.size() && s[i] == p[j]) {
-			ans |= dp(i + 1, j + 1);
-		}
-		else if (p[j] == '?') {
-			if (i == s.size()) {
-				return false;
-			}
-			else {
-				ans |= dp(i + 1, j + 1);
-			}
-		}
-		else if (p[j] == '*') {
-			if (i < s.size()) {
-				ans |= dp(i + 1, j);
-			}
-			ans |= dp(i, j + 1);
-		}
-		return memo[i][j] = ans;
-	}
-	bool isMatch(string ss, string pp) {
-		this->s = ss;
-		this->p = pp;
-		memo.resize(ss.size() + 1, vector<int> (pp.size() + 1, -1));
-		// 2d array structure filled with -1s
-		return dp(0, 0);
-	}
-};
+    return dp[i][j];
+}
 
+void solve(int cases)
+{
+    int n;
+    scanf("%d", &n);
+
+    for(int i=1; i<=n; ++ i)
+        for(int j=1; j<=n; ++ j)
+            dp[i][j] = INT_MAX;
+
+    sum[0] = 0;
+    for(int i=1; i<=n; ++ i)
+    {
+        scanf("%d", &sum[i]);
+        dp[i][i] = sum[i];
+        sum[i] += sum[i-1];
+    }
+    printf("Case %d: %d\n", cases, cou(1, n));
+}
 int main()
 {
-	//freopen("input.txt", "r", stdin);
-	//freopen("output.txt", "w", stdout);
-
-	string s, p;
-	cin >> s >> p;
-
-	Solution H;
-	cout << H.isMatch(s, p);
-
-	return 0;
+    int t;
+    scanf("%d", &t);
+    for(int i=1; i<=t; ++ i)
+        solve(i);
+    return 0;
 }

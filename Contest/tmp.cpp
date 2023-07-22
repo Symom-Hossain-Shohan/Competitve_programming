@@ -1,63 +1,105 @@
-#include <bits/stdc++.h>
-#include<ext/pb_ds/assoc_container.hpp>
-#include<ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
+// C++ program for a Trie based O(n) solution to find max
+// subarray XOR
+#include<bits/stdc++.h>
 using namespace std;
 
+// Assumed int size
+#define INT_SIZE 32
 
-//defines...
-#define ll           long long
-#define boost        ios_base::sync_with_stdio(false);cin.tie(NULL);
-#define pb           push_back
-#define mp           make_pair
-#define in           insert
-#define pi           2*acos(0.0)
-#define srt(s)       sort(s.begin(),s.end())
-#define rsrt(s)      sort(s.rbegin(),s.rend())
-#define all(x)       x.begin(),x.end()
-#define mem(a, b)    memset(a, b, sizeof(a))
-#define c_test       printf("Case %lld: ",t)
-
-const ll mod=1e9+7;
-const ll MX=2e5+5;
-
-
-inline void norm(ll &a) {a%=mod; (a<0) && (a+=mod) ;}                            //positive mod value
-inline ll modAdd(ll a,ll b) {a%=mod, b%=mod; norm(a),norm(b); return (a+b)%mod;} //modular addition
-inline ll modSub(ll a,ll b) {a%=mod, b%=mod; norm(a),norm(b); return (a-b)%mod;} //modular subtraction
-inline ll modMul(ll a,ll b) {a%=mod, b%=mod; norm(a),norm(b); return (a*b)%mod;} //modular multiplication
-
-inline ll bigMod(ll b,ll p)  {ll r=1; while(p) {if(p & 1LL) r=modMul(r,b) ;b=modMul(b,b) ; p>>=1LL ; } return r; }
-inline ll modInverse(ll a) {return bigMod(a,mod-2); }
-inline ll modDiv(ll a ,ll b) { return modMul(a,modInverse(b)) ;}
-
-
-typedef tree<ll,null_type,less<ll>,rb_tree_tag,tree_order_statistics_node_update>ordered_set;
-
-int dRow[] = { -1, 0, 1, 0 };
-int dCol[] = { 0, 1, 0, -1 };
-
-ll ext_gcd(ll a, ll b, ll& x, ll& y) {
-    if (b == 0) {x = 1;y = 0;return a;}
-    ll x1, y1, d = ext_gcd(b, a % b, x1, y1);
-    x = y1;y = x1 - y1 * (a / b);
-    return d;
-}
-
-
-void solve()
+// A Trie Node
+struct TrieNode
 {
-    
+	int value; // Only used in leaf nodes
+	TrieNode *arr[2];
+};
+
+// Utility function to create a Trie node
+TrieNode *newNode()
+{
+	TrieNode *temp = new TrieNode;
+	temp->value = 0;
+	temp->arr[0] = temp->arr[1] = NULL;
+	return temp;
 }
 
+// Inserts pre_xor to trie with given root
+void insert(TrieNode *root, int pre_xor)
+{
+	TrieNode *temp = root;
+
+	// Start from the msb, insert all bits of
+	// pre_xor into Trie
+	for (int i=INT_SIZE-1; i>=0; i--)
+	{
+		// Find current bit in given prefix
+		bool val = pre_xor & (1<<i);
+
+		// Create a new node if needed
+		if (temp->arr[val] == NULL)
+			temp->arr[val] = newNode();
+
+		temp = temp->arr[val];
+	}
+
+	// Store value at leaf node
+	temp->value = pre_xor;
+}
+
+// Finds the maximum XOR ending with last number in
+// prefix XOR 'pre_xor' and returns the XOR of this maximum
+// with pre_xor which is maximum XOR ending with last element
+// of pre_xor.
+int query(TrieNode *root, int pre_xor)
+{
+	TrieNode *temp = root;
+	for (int i=INT_SIZE-1; i>=0; i--)
+	{
+		// Find current bit in given prefix
+		bool val = pre_xor & (1<<i);
+
+		// Traverse Trie, first look for a
+		// prefix that has opposite bit
+		if (temp->arr[1-val]!=NULL)
+			temp = temp->arr[1-val];
+
+		// If there is no prefix with opposite
+		// bit, then look for same bit.
+		else if (temp->arr[val] != NULL)
+			temp = temp->arr[val];
+	}
+	return pre_xor^(temp->value);
+}
+
+// Returns maximum XOR value of a subarray in arr[0..n-1]
+int maxSubarrayXOR(int arr[], int n)
+{
+	// Create a Trie and insert 0 into it
+	TrieNode *root = newNode();
+	insert(root, 0);
+
+	// Initialize answer and xor of current prefix
+	int result = INT_MIN, pre_xor =0;
+
+	// Traverse all input array element
+	for (int i=0; i<n; i++)
+	{
+		// update current prefix xor and insert it into Trie
+		pre_xor = pre_xor^arr[i];
+		insert(root, pre_xor);
+
+		// Query for current prefix xor in Trie and update
+		// result if required
+		result = max(result, query(root, pre_xor));
+	}
+	return result;
+}
+
+// Driver program to test above functions
 int main()
 {
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
-    ll tc = 1;
-    //cin >> tc;
-    for (ll t = 1; t <= tc; t++)
-    {
-        solve();
-    }
-    return 0;
+    //8 2 4 12 1
+	int arr[] = {8, 2, 4, 12, 1};
+	int n = sizeof(arr)/sizeof(arr[0]);
+	cout << "Max subarray XOR is " << maxSubarrayXOR(arr, n);
+	return 0;
 }

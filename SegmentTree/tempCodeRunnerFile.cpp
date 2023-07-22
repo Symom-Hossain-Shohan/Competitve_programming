@@ -1,63 +1,194 @@
-#include <bits/stdc++.h>
-#include<ext/pb_ds/assoc_container.hpp>
-#include<ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
+#include <stdio.h>
+#include <iostream>
+#include <map>
+#include <cmath>
+#include <algorithm>
+#include <set>
+#include <stack>
+#include <deque>
+#include <vector>
+#include <stdlib.h>
+#include <string>
+#include <string.h>
+
 using namespace std;
 
+#define ll long long
+#define sl(n) scanf("%lld", &n)
+#define si(n) scanf("%d", &n)
+#define ss(n) scanf("%s", n)
 
-//defines...
-#define ll           long long
-#define boost        ios_base::sync_with_stdio(false);cin.tie(NULL);
-#define pb           push_back
-#define mp           make_pair
-#define in           insert
-#define pi           2*acos(0.0)
-#define srt(s)       sort(s.begin(),s.end())
-#define rsrt(s)      sort(s.rbegin(),s.rend())
-#define all(x)       x.begin(),x.end()
-#define mem(a, b)    memset(a, b, sizeof(a))
-#define c_test       printf("Case %lld: ",t)
+int ar[100010];
 
-const ll mod=1e9+7;
-const ll MX=2e5+5;
+int tree[600010];
 
+int prev[100010], loc[100010];
 
-inline void norm(ll &a) {a%=mod; (a<0) && (a+=mod) ;}                            //positive mod value
-inline ll modAdd(ll a,ll b) {a%=mod, b%=mod; norm(a),norm(b); return (a+b)%mod;} //modular addition
-inline ll modSub(ll a,ll b) {a%=mod, b%=mod; norm(a),norm(b); return (a-b)%mod;} //modular subtraction
-inline ll modMul(ll a,ll b) {a%=mod, b%=mod; norm(a),norm(b); return (a*b)%mod;} //modular multiplication
+struct node
+{
+    ll x, y, r, in;
+} que[60000];
 
-inline ll bigMod(ll b,ll p)  {ll r=1; while(p) {if(p & 1LL) r=modMul(r,b) ;b=modMul(b,b) ; p>>=1LL ; } return r; }
-inline ll modInverse(ll a) {return bigMod(a,mod-2); }
-inline ll modDiv(ll a ,ll b) { return modMul(a,modInverse(b)) ;}
-
-
-typedef tree<ll,null_type,less<ll>,rb_tree_tag,tree_order_statistics_node_update>ordered_set;
-
-int dRow[] = { -1, 0, 1, 0 };
-int dCol[] = { 0, 1, 0, -1 };
-
-ll ext_gcd(ll a, ll b, ll& x, ll& y) {
-    if (b == 0) {x = 1;y = 0;return a;}
-    ll x1, y1, d = ext_gcd(b, a % b, x1, y1);
-    x = y1;y = x1 - y1 * (a / b);
-    return d;
+bool comp (node a, node b)
+{
+    if (a.x < b.x)
+        return true;
+    else return false;
 }
 
-
-void solve()
+bool comp2(node a, node b)
 {
-    
+    if (a.in < b.in)
+        return true;
+    else return false;
 }
 
-int main()
+void create(ll n, ll b, ll e)
 {
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
-    ll tc = 1;
-    //cin >> tc;
-    for (ll t = 1; t <= tc; t++)
+ //   cout << n << " " << b << " " << e << endl;
+
+    if (b == e)
     {
-        solve();
+        tree[n] = ar[b];
+        return ;
     }
+
+    ll l, r, m;
+    l = 2*n;
+    r = l + 1;
+    m = (b+e)/2;
+    create(l, b, m);
+    create(r, m + 1, e);
+    tree[n] = tree[l] + tree[r];
+
+ //   cout << n << " " << b << " " << e << " " << tree[n] << " " << tree[l] << " " << tree[r] << endl;
+}
+
+ll query(ll n, ll b, ll e, ll i, ll j)
+{
+  //  cout << n << " " << b << " " << e << " " << i << " " << j << endl;
+    if (j < b || e < i)
+        return 0;
+
+
+    if (i <= b && e <= j)
+    {
+        return tree[n];
+    }
+
+    ll l, r, m, ab, cd;
+    l = 2*n;
+    r = l + 1;
+    m = (b+e)/2;
+
+    ab = query(l, b, m, i, j);
+    cd = query(r, m + 1, e, i, j);
+ //   cout << n << " " << b << " " << e << " " << m << " " << ab << " " << cd << endl;
+    return (ab + cd);
+}
+
+void update(ll n, ll b, ll e, ll i, ll x)
+{
+    if (i < b || e < i)
+        return ;
+
+    if (i <= b && e <= i)
+    {
+        tree[n] = x;
+        return ;
+    }
+
+    ll l, r, m;
+    l = 2*n;
+    r = l + 1;
+    m = (b+e)/2;
+
+    update(l, b, m, i, x);
+    update(r, m + 1, e, i, x);
+
+    tree[n] = tree[l] + tree[r];
+}
+
+int main ()
+{
+   // freopen("out.txt", "w", stdout);
+    ll cs, t, i, j, k, n, x, y, ans, q;
+
+    sl(t);
+
+    for (cs = 1; cs <= t; cs++)
+    {
+        printf("Case %lld:\n", cs);
+        sl(n);
+        sl(q);
+
+        for (i = 0; i <= 100005; i++)
+        {
+            prev[i] = loc[i] = ar[i] = 0;
+        }
+
+    //    for (i = 0; i <= 600000; i++)
+      //  {
+        //    tree[i] = 0;
+       // }
+
+        for (i = 1; i <= n; i++)
+        {
+            sl(x);
+
+            if (prev[x] == 0)
+            {
+                prev[x] = i;
+                ar[i] = 1;
+            }
+            else
+            {
+                loc[prev[x]] = i;   // loc is next position
+                prev[x] = i;
+            }
+
+        }
+
+    //    for (i = 1; i <= n; i++)
+      //      cout << ar[i] << " ";
+        //cout << endl;
+
+        create(1, 1, n);
+
+        //cout << tree[1] << endl;
+
+        for (i = 1; i <= q; i++)
+        {
+           sl(que[i].x);
+           sl(que[i].y);
+           que[i].in = i;
+        }
+
+        sort(que + 1, que+ q + 1, comp);
+
+        j = 1;
+
+        for (i = 1; i <= q; i++)
+        {
+            while (j < que[i].x)
+            {
+                if (loc[j] != 0)
+                {
+                    update(1, 1, n, loc[j], 1);
+                }
+                j++;
+            }
+       //     cout << que[i].x << " " << que[i].y << endl;
+            que[i].r = query(1, 1, n, que[i].x, que[i].y);
+        }
+
+        sort(que + 1, que+ q + 1, comp2);
+
+        for (i = 1; i <= q; i++)
+        {
+            printf("%lld\n", que[i].r);
+        }
+    }
+
     return 0;
 }
