@@ -5,8 +5,6 @@ typedef long long ll;
 
 void solve()
 {
-    dfafd;
-    
 
 }
 

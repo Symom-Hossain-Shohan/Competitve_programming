@@ -2,35 +2,57 @@
 using namespace std;
 
 typedef long long ll;
-const ll mod = 1e9 + 7;
 ll n, m;
-vector<ll> v;
+vector<ll> ar;
+ll mod = 1e9 + 7;
+
 ll memo[100005][101];
 
-ll dp(ll pos, ll prv)
+ll dp(ll pos, ll prev)
 {
     if (pos == n)
         return 1;
-    if (memo[pos][prv] != -1)
-        return memo[pos][prv];
-    if (abs(v[pos] - prv) > 1)
-        return 0;
-    if (v[pos] == 0)
+
+    if (memo[pos][prev] != -1)
+        return memo[pos][prev];
+    if (ar[pos]!=0)
     {
-        return memo[pos][prv] = ((dp(pos + 1, prv - 1) + dp(pos + 1, prv))%mod + dp(pos + 1, prv + 1)) % mod;
+        if (abs(prev - ar[pos]) <= 1)
+            return memo[pos][prev] = dp(pos + 1, ar[pos]) % mod;
+        else
+            return memo[pos][prev] = 0;
     }
     else
-        return memo[pos][prv] = dp(pos + 1, v[pos]);
+    {
+        ll ans1 = dp(pos + 1, prev) % mod;
+        ll ans2 = 0; 
+        if(prev-1>=1)
+         ans2 = (dp(pos + 1, prev - 1) * (prev - 1 > 0)) % mod;
+        ll ans3 = 0; 
+        if(prev+1<=m)
+         ans3 = (dp(pos + 1, prev + 1) * (prev + 1 <= m)) % mod;
+        return memo[pos][prev] = (ans1 + ans2 + ans3) % mod;
+    }
 }
 
 void solve()
 {
     cin >> n >> m;
-    v.resize(n);
-    for (int i = 0; i < n; i++)
-        cin >> v[i];
+    ar.resize(n);
+    for (auto &i : ar)
+        cin >> i;
     memset(memo, -1, sizeof(memo));
-    cout << dp(0, v[0]) << endl;
+    if (ar[0])
+    {
+        cout << dp(1, ar[0]) % mod << endl;
+    }
+    else
+    {
+        ll ans = 0;
+        for (int i = 1; i <= m; i++)
+            ans = (ans + dp(1, i) %mod) % mod;
+        cout << ans << endl;
+    }
 }
 
 int main()
